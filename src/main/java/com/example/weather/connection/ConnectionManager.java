@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 @Component
 public class ConnectionManager {
 
-    private final JdbcTemplate jdbcTemplate;
+    protected final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public ConnectionManager(DataSource dataSource) {

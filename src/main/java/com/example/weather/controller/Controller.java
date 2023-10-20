@@ -1,6 +1,5 @@
 package com.example.weather.controller;
 
-import com.example.weather.service.TimeService;
 import com.example.weather.service.WeatherService;
 import com.example.weather.storage.Storage;
 import com.example.weather.usermanagement.Key;
@@ -9,21 +8,21 @@ import com.example.weather.usermanagement.UserMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class Controller {
 
     private final WeatherService weatherService;
-    private final TimeService timeService;
     private final Storage storage;
 
-
     @Autowired
-    public Controller(WeatherService weatherService, TimeService timeService, Storage storage) {
+    public Controller(WeatherService weatherService, Storage storage) {
         this.weatherService = weatherService;
-        this.timeService = timeService;
         this.storage = storage;
     }
 
@@ -63,14 +62,6 @@ public class Controller {
         } else {
             return "Error";
         }
-    }
-
-    @PostMapping("/data")
-    public String getData(String name) throws JsonProcessingException {
-        String currentTime = timeService.getCurrentTime(name);
-        UserMessage userMessage = new UserMessage();
-        userMessage.setMessage("Взято с time100" + " " + "-" + " " + currentTime);
-        return new ObjectMapper().writeValueAsString(userMessage);
     }
 
     @PostMapping("/city")

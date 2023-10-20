@@ -14,6 +14,7 @@ function showRegistration() {
 function registrationForm() {
     const registration = document.getElementById('registration');
     const hello = document.getElementById('hello-user');
+    const select = document.getElementById('tik-tak-tabs')
     const cityButton = document.getElementById('add-city-button');
     const cityList = document.getElementById('city-list');
     const weather = document.getElementById('weather')
@@ -24,6 +25,13 @@ function registrationForm() {
         hello.style.display = 'none';
     } else {
         hello.style.display = 'block';
+        registration.style.display = 'none';
+    }
+
+    if (select.style.display === 'block') {
+        select.style.display = 'none';
+    } else {
+        select.style.display = 'block';
         registration.style.display = 'none';
     }
 
@@ -82,6 +90,7 @@ function registration() {
 function authorizationForm() {
     const authorization = document.getElementById('authorization');
     const hello = document.getElementById("hello-user");
+    const select = document.getElementById('tik-tak-tabs')
     const cityButton = document.getElementById('add-city-button');
     const cityList = document.getElementById('city-list');
     const weather = document.getElementById('weather')
@@ -92,6 +101,13 @@ function authorizationForm() {
         hello.style.display = 'none';
     } else {
         hello.style.display = 'block';
+        authorization.style.display = 'none';
+    }
+
+    if (select.style.display === 'block') {
+        select.style.display = 'none';
+    } else {
+        select.style.display = 'block';
         authorization.style.display = 'none';
     }
 
@@ -141,7 +157,8 @@ function authorization() {
         console.log(json);
         localStorage.setItem('key', json.key);
         if (localStorage.getItem('key') !== null) {
-            await verificationUser(json.key);;
+            await verificationUser(json.key);
+            ;
         }
     });
 }
@@ -163,34 +180,31 @@ async function verificationUser(key) {
 }
 
 // Отправляем название города, возвращаем время
-async function loadData() {
-        const formData = new FormData();
-        formData.append('name', 'Adler');
+document.addEventListener("DOMContentLoaded", function () {
+    const obj = {timeZone: "Europe/Moscow"};
+    let timer;
 
-        try {
-            const response = await fetch('http://localhost:9000/data', {
-                method: 'POST',
-                body: formData,
-                headers: {'Accept': 'application/json'}
-            });
-
-            const weatherData = await response.json(); // Получаем данные о погоде
-            return weatherData;
-        } catch (error) {
-            console.error('Error sending data:', error);
-            return { error: 'Error sending data' };
-        }
+    function tic() {
+        const date = new Date();
+        const timeElement = document.getElementById("tik-tak-time");
+        timeElement.textContent = date.toLocaleTimeString("ru", obj);
+        timer = setTimeout(tic, 1000);
     }
 
-function updateData() {
-    loadData().then(data => {
-        const dataResults = document.getElementById('data-container');
-        const messageText = data.message;
-        dataResults.textContent = messageText;
-    });
-}
+    tic();
 
-setInterval(updateData, 1000);
+    const citySelect = document.getElementById("city-select");
+
+    citySelect.addEventListener("change", function () {
+        obj.timeZone = citySelect.value;
+        document.getElementById("tik-tak-city").textContent = '';
+        clearTimeout(timer);
+        tic();
+    });
+
+    obj.timeZone = citySelect.value;
+    tic();
+});
 
 // Отправляем название города, возвращаем погоду
 const addCityButton = document.getElementById('add-city-button');
